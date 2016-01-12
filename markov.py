@@ -47,7 +47,8 @@ def make_text(chains):
     key0 = choice(chains.keys())
     text = key0[0] + " " + key0[1] + " " + choice(chains[key0]) 
 
-    while text[-9:] != "Sam I am?":
+    # while text[-9:] != "Sam I am?":
+    while text[-15:] != "from the earth.":
         indiv_text = text.split()
         key = (indiv_text[-2], indiv_text[-1])
         text = text + " " + choice(chains[key]) 
@@ -55,7 +56,8 @@ def make_text(chains):
     print text
     return text
 
-text_string = open_and_read_file("green-eggs.txt")
+# text_string = open_and_read_file("green-eggs.txt")
+text_string = open_and_read_file("gettysburg.txt")
 chains = make_chains(text_string)
 make_text(chains)
 
