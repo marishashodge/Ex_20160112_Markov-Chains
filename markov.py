@@ -13,7 +13,7 @@ def open_and_read_file(file_path):
 
     return content
 
-def make_chains(text_string):
+def make_chains(text_string,nth_gram):
     """Takes input text as string; returns _dictionary_ of markov chains.
 
     A chain will be a key that consists of a tuple of (word1, word2)
@@ -29,31 +29,39 @@ def make_chains(text_string):
     chains = {}
     indiv_words = text_string.split()
 
-    for i in range(len(indiv_words) - 2):
-        if (indiv_words[i], indiv_words[i+1]) not in chains:
-            chains[(indiv_words[i]), indiv_words[i+1]] = [indiv_words[i+2]]
+    for i in range(len(indiv_words) - nth_gram):
+        nth_tuple = (indiv_words[i],)
 
-        elif (indiv_words[i], indiv_words[i+1]) in chains:
-            chains[(indiv_words[i], indiv_words[i+1])].append(indiv_words[i+2])
+        if nth_gram > 1:
+            for n in range(nth_gram)[1:]:
+                nth_tuple = nth_tuple + (indiv_words[i+n],)
 
+        if nth_tuple not in chains:
+            chains[nth_tuple] = [indiv_words[i+nth_gram]]
+
+        elif nth_tuple in chains:
+            chains[nth_tuple].append(indiv_words[i+nth_gram])
+
+    print chains
     return chains
 
 
-
-def make_text(chains, text_string):
+def make_text(chains, text_string, nth_gram):
     """Takes dictionary of markov chains; returns random text."""
 
     key0 = choice(chains.keys())
     text = key0[0] + " " + key0[1] + " " + choice(chains[key0]) 
 
-    # while text[-9:] != "Sam I am?":
     indiv_words = text_string.split()
     stop_adding = indiv_words[-3] + " " + indiv_words[-2] + " " + indiv_words[-1]
     stop_count = len(stop_adding)
 
     while text[-stop_count:] != stop_adding:
         indiv_text = text.split()
-        key = (indiv_text[-2], indiv_text[-1])
+        key = (indiv_text[-nth_gram],)
+        if nth_gram > 1: 
+            for n in range(nth_gram)[1:]:
+                key = key + (indiv_text[(-nth_gram)+n],)
         text = text + " " + choice(chains[key]) 
 
     print text
@@ -63,8 +71,8 @@ import sys
 
 filename = sys.argv[1]
 text_string = open_and_read_file(filename)
-chains = make_chains(text_string)
-make_text(chains, text_string)
+chains = make_chains(text_string, 3)
+# make_text(chains, text_string, 3)
 
 # Below code provided by Hackbright
 # input_text = "green-eggs.txt"
