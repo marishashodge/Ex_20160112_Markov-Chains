@@ -27,20 +27,20 @@ def make_chains(text_string):
     """
 
     chains = {}
-    individual_words = text_string.split()
+    indiv_words = text_string.split()
 
-    for i in range(len(individual_words) - 2):
-        if (individual_words[i], individual_words[i+1]) not in chains:
-            chains[(individual_words[i]), individual_words[i+1]] = [individual_words[i+2]]
+    for i in range(len(indiv_words) - 2):
+        if (indiv_words[i], indiv_words[i+1]) not in chains:
+            chains[(indiv_words[i]), indiv_words[i+1]] = [indiv_words[i+2]]
 
-        elif (individual_words[i], individual_words[i+1]) in chains:
-            chains[(individual_words[i], individual_words[i+1])].append(individual_words[i+2])
+        elif (indiv_words[i], indiv_words[i+1]) in chains:
+            chains[(indiv_words[i], indiv_words[i+1])].append(indiv_words[i+2])
 
     return chains
 
 
 
-def make_text(chains):
+def make_text(chains, text_string):
     """Takes dictionary of markov chains; returns random text."""
 
 
@@ -48,7 +48,11 @@ def make_text(chains):
     text = key0[0] + " " + key0[1] + " " + choice(chains[key0]) 
 
     # while text[-9:] != "Sam I am?":
-    while text[-15:] != "from the earth.":
+    indiv_words = text_string.split()
+    stop_adding = indiv_words[-3] + " " + indiv_words[-2] + " " + indiv_words[-1]
+    stop_count = len(stop_adding)
+
+    while text[-stop_count:] != stop_adding:
         indiv_text = text.split()
         key = (indiv_text[-2], indiv_text[-1])
         text = text + " " + choice(chains[key]) 
@@ -56,13 +60,14 @@ def make_text(chains):
     print text
     return text
 
-# text_string = open_and_read_file("green-eggs.txt")
-text_string = open_and_read_file("gettysburg.txt")
-chains = make_chains(text_string)
-make_text(chains)
+
 
 # text_string = open_and_read_file("green-eggs.txt")
-# chains = make_chains(text_string)
+text_string = open_and_read_file("green-eggs.txt")
+chains = make_chains(text_string)
+make_text(chains, text_string)
+
+# Below code provided by Hackbright
 # input_text = "green-eggs.txt"
 
 # # Open the file and turn it into one long string
