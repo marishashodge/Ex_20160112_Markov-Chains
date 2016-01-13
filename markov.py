@@ -42,15 +42,20 @@ def make_chains(text_string,nth_gram):
         elif nth_tuple in chains:
             chains[nth_tuple].append(indiv_words[i+nth_gram])
 
-    print chains
+    # print chains
     return chains
 
 
 def make_text(chains, text_string, nth_gram):
     """Takes dictionary of markov chains; returns random text."""
 
-    key0 = choice(chains.keys())
-    text = key0[0] + " " + key0[1] + " " + choice(chains[key0]) 
+    key = choice(chains.keys())
+    text = key[0]
+    if nth_gram > 1:
+        for n in range(nth_gram)[1:]:
+            text = text + " " + key[n]
+
+    text += " " + choice(chains[key]) 
 
     indiv_words = text_string.split()
     stop_adding = indiv_words[-3] + " " + indiv_words[-2] + " " + indiv_words[-1]
@@ -58,11 +63,11 @@ def make_text(chains, text_string, nth_gram):
 
     while text[-stop_count:] != stop_adding:
         indiv_text = text.split()
-        key = (indiv_text[-nth_gram],)
+        next_key = (indiv_text[-nth_gram],)
         if nth_gram > 1: 
             for n in range(nth_gram)[1:]:
-                key = key + (indiv_text[(-nth_gram)+n],)
-        text = text + " " + choice(chains[key]) 
+                next_key = next_key + (indiv_text[(-nth_gram)+n],)
+        text = text + " " + choice(chains[next_key]) 
 
     print text
     return text
@@ -72,7 +77,7 @@ import sys
 filename = sys.argv[1]
 text_string = open_and_read_file(filename)
 chains = make_chains(text_string, 3)
-# make_text(chains, text_string, 3)
+make_text(chains, text_string, 3)
 
 # Below code provided by Hackbright
 # input_text = "green-eggs.txt"
