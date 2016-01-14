@@ -49,19 +49,28 @@ def make_chains(text_string,nth_gram):
 def make_text(chains, text_string, nth_gram):
     """Takes dictionary of markov chains; returns random text."""
 
-    key = choice(chains.keys())
+    # Check for key with capitalized first word
+    first_word = "test"
+    while first_word != first_word.capitalize():
+        key = choice(chains.keys())
+        first_word = key[0]
+
+    # Initializing output text with 1st key
     text = key[0]
     if nth_gram > 1:
         for n in range(nth_gram)[1:]:
             text = text + " " + key[n]
 
+    # Add random word after first key
     text += " " + choice(chains[key]) 
 
-    indiv_words = text_string.split()
-    stop_adding = indiv_words[-3] + " " + indiv_words[-2] + " " + indiv_words[-1]
-    stop_count = len(stop_adding)
+    # Set arbitrary stop point with last three words of text file
+    # indiv_words = text_string.split()
+    # stop_adding = indiv_words[-3] + " " + indiv_words[-2] + " " + indiv_words[-1]
+    # stop_count = len(stop_adding)
 
-    while text[-stop_count:] != stop_adding:
+    # Add words to output text until stop point reached
+    while text[-1] not in ["?", "!", "."]: # alternative option: text[-stop_count:] != stop_adding:
         indiv_text = text.split()
         next_key = (indiv_text[-nth_gram],)
         if nth_gram > 1: 
@@ -79,7 +88,7 @@ text_string = open_and_read_file(filename)
 chains = make_chains(text_string, 3)
 make_text(chains, text_string, 3)
 
-# Below code provided by Hackbright
+# Below code provided by Hackbright:
 # input_text = "green-eggs.txt"
 
 # # Open the file and turn it into one long string
