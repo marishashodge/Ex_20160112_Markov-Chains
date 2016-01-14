@@ -1,4 +1,8 @@
+import os
+import sys
+import twitter
 from random import choice
+# from markov_twitter import tweet
 
 
 def open_and_read_file(file_path1, file_path2):
@@ -72,6 +76,8 @@ def make_text(chains, text_string, nth_gram):
     # stop_count = len(stop_adding)
 
     # Add words to output text until stop point reached
+
+    # if len(text) < 140:
     while text[-1] not in ["?", "!", "."]: # alternative option: text[-stop_count:] != stop_adding:
         indiv_text = text.split()
         next_key = (indiv_text[-nth_gram],)
@@ -80,16 +86,36 @@ def make_text(chains, text_string, nth_gram):
                 next_key = next_key + (indiv_text[(-nth_gram)+n],)
         text = text + " " + choice(chains[next_key]) 
 
-    print text
+    # else: 
     return text
 
-import sys 
+
+def tweet(chains):
+    # Use Python os.environ to get at environmental variables
+    # Note: you must run `source secrets.sh` before running this file
+    # to make sure these environmental variables are set.
+    
+    api = twitter.Api(
+        consumer_key=os.environ['TWITTER_CONSUMER_KEY'],
+        consumer_secret=os.environ['TWITTER_CONSUMER_SECRET'],
+        access_token_key=os.environ['TWITTER_ACCESS_TOKEN_KEY'],
+        access_token_secret=os.environ['TWITTER_ACCESS_TOKEN_SECRET'])
+
+    # This will print info about credentials to make sure they're correct
+    # print api.VerifyCredentials()
+
+    # Send a tweet
+    status = api.PostUpdate(chains)
+    print status.text
+
 
 filename1 = sys.argv[1]
 filename2 = sys.argv[2]
 text_string = open_and_read_file(filename1, filename2)
 chains = make_chains(text_string, 2)
-make_text(chains, text_string, 2)
+text = make_text(chains, text_string, 2)
+# print text
+tweet(text)
 
 # Below code provided by Hackbright:
 # input_text = "green-eggs.txt"
