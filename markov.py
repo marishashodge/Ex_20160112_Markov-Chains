@@ -1,17 +1,19 @@
 from random import choice
 
 
-def open_and_read_file(file_path):
+def open_and_read_file(file_path1, file_path2):
     """Takes file path as string; returns text as string.
 
     Takes a string that is a file path, opens the file, and turns
     the file's contents as one string of text.
     """
 
-    content = open(file_path)
-    content = content.read()
+    content1 = open(file_path1)
+    content2 = open(file_path2)
 
-    return content
+    full_content = content1.read() + " " + content2.read()
+
+    return full_content
 
 def make_chains(text_string,nth_gram):
     """Takes input text as string; returns _dictionary_ of markov chains.
@@ -83,10 +85,11 @@ def make_text(chains, text_string, nth_gram):
 
 import sys 
 
-filename = sys.argv[1]
-text_string = open_and_read_file(filename)
-chains = make_chains(text_string, 3)
-make_text(chains, text_string, 3)
+filename1 = sys.argv[1]
+filename2 = sys.argv[2]
+text_string = open_and_read_file(filename1, filename2)
+chains = make_chains(text_string, 2)
+make_text(chains, text_string, 2)
 
 # Below code provided by Hackbright:
 # input_text = "green-eggs.txt"
